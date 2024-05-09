@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class NPCPlane : PlaneController
 {
-    Ray ray;
-    RaycastHit raycastHit;
     private float cooldown;
     public GameObject target;
     // Start is called before the first frame update
@@ -17,45 +15,47 @@ public class NPCPlane : PlaneController
     // Update is called once per frame
     void Update()
     {
-        ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray, out raycastHit))
-        {
-
-        }
-        else
-        {
-
-        }
 
         cooldown += Time.deltaTime;
         if (cooldown >= 5f)
         {
-            if (Vector3.Distance(gameObject.transform.position, target.transform.position) < 10f)
+            if(target != null)
             {
-                Fire();
-                cooldown = 0;
+                if (Vector3.Distance(gameObject.transform.position, target.transform.position) < 20f)
+                {
+                    Fire();
+                    cooldown = 0;
+                }
+            }
+
+        }
+
+        if(target != null)
+        {
+            if (Vector3.Distance(gameObject.transform.position, target.transform.position) < 50f)
+            {
+                Brake();
+            }
+            else
+            {
+                Accelerate();
             }
         }
 
-        if (Vector3.Distance(gameObject.transform.position, target.transform.position) < 50f)
-        {
-            Brake();
-        }
-        else
-        {
-            Accelerate();
-        }
 
-        throttle = Mathf.Clamp(throttle, 50f, 100f);
+        throttle = Mathf.Clamp(throttle, 50f, 70f);
 
     }
 
     public void FixedUpdate()
     {
         rb.AddForce(transform.forward * maxThrust * throttle);
-        //rb.AddTorque(GetAngle() * sensitivity / 2f);
-        rb.AddTorque(transform.up * GetXAngle() * sensitivity/5f);
-        rb.AddTorque(transform.right * GetYAngle() * sensitivity/5f);
+        if (target != null)
+        {
+            rb.AddTorque(transform.up * GetXAngle() * sensitivity / 5f);
+            rb.AddTorque(transform.right * GetYAngle() * sensitivity / 5f);
+        }
+
     }
 
     //find player
@@ -71,12 +71,6 @@ public class NPCPlane : PlaneController
     void Brake()
     {
         throttle -= throttleIncrement;
-    }
-
-    public Vector3 GetAngle()
-    {
-        Vector3 direction = target.transform.position - gameObject.transform.position;
-        return direction;
     }
 
     public float GetXAngle()
