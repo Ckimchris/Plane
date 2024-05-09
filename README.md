@@ -1,4 +1,8 @@
 # Plane
+
+## Version
+Unity 2022.2.13
+
 ## Controls
 Left and Right Arrows - Roll
 
@@ -16,3 +20,4 @@ R - Restart
 
 
 There are two modes Freeplay and Vs. CPU. In Freeplay you can control the plane in an empty space to get used to the controls. In Vs. CPU you will face off against a CPU fighter plane where you have to shoot each other down. 
+
